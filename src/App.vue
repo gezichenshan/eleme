@@ -1,7 +1,7 @@
 <template>
   <div id="app">
-    <Header/>
-    <div class="tab">
+    <Header :seller="seller"/>
+    <div class="tab border-1px">
       <div class="tab-item">
         <router-link :to="{ name: 'goods'}">
           商品
@@ -24,14 +24,28 @@
 
 <script>
 import Header from '@/components/header/v-header'
+import { seller } from '@/api/index'
 export default {
   name: 'App',
   components: { Header },
+  data() {
+    return {
+      seller: {},
+    }
+  },
+  created() {
+    seller()
+      .then(res => {
+        this.seller = res.data.data
+      })
+      .catch()
+  },
 }
 </script>
 
 <style lang="stylus" rel="stylesheet/stylus">
-@import './common/stylus/mixin.styl';
+@import 'common/stylus/mixin.styl';
+@import 'common/stylus/base.styl';
 
 #app {
   .tab {
@@ -39,7 +53,6 @@ export default {
     width: 100%;
     height: 40px;
     line-height: 40px;
-    // border-bottom: 1px solid rgba(7, 12, 27, 0.1);
     border-1px(rgba(7, 12, 27, 0.1));
 
     .tab-item {
