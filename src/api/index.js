@@ -1,6 +1,5 @@
 import axios from 'axios'
 const BASE_URL = process.env.BASE_URL
-console.log(process.env)
 
 export function goods() {
   const url = `${BASE_URL}/goods`
