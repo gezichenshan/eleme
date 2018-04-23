@@ -35,7 +35,7 @@ export default {
     totalCount() {
       let total = 0
       this.selectedFood.forEach(item => {})
-      return 1
+      return total
     },
     payDesc() {
       if (this.totalPrice === 0) {
