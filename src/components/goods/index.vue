@@ -20,7 +20,7 @@
         <li :key="index" v-for="(item, index) in goods" class="food-list food-list-hook">
           <h1 class="title">{{item.name}}</h1>
           <ul>
-            <li :key="index" v-for="(food,index) in item.foods" class="food-item border-1px">
+            <li :key="index" v-for="(food, index) in item.foods" class="food-item border-1px" @click="addToCart(food)">
               <div class="icon">
                 <img width="57" height="57" :src="food.icon">
               </div>
@@ -39,17 +39,19 @@
               <div></div>
             </li>
           </ul>
-
         </li>
       </ul>
     </div>
+    <shopcart :delivery-price="seller.deliveryPrice" :min-price="seller.minPrice" :selectedFood="selectedFood"/>
   </div>
 </template>
 
 <script>
 import { goods } from '../../api'
 import BScroll from 'better-scroll'
+import shopcart from '@/components/shopcart'
 export default {
+  components: { shopcart },
   props: {
     seller: {
       type: Object,
@@ -60,6 +62,7 @@ export default {
       goods: [],
       offsetY: 0,
       itemsHeightArr: [],
+      selectedFood: [],
     }
   },
   created() {
@@ -102,10 +105,11 @@ export default {
       })
     },
     selectMenu(index) {
-      console.log(index)
       let scrollHeight = this.itemsHeightArr[index]
-      console.log(scrollHeight)
       this.foods.scrollTo(0, -scrollHeight, 500)
+    },
+    addToCart(food) {
+      this.selectedFood.push(food)
     },
   },
 }
@@ -138,7 +142,7 @@ h1 {
       z-index: 10;
 
       .text {
-        color: #f00;
+        color: #000;
         border-none();
       }
     }
