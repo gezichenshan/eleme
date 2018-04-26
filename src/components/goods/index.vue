@@ -20,7 +20,7 @@
         <li :key="index" v-for="(item, index) in goods" class="food-list food-list-hook">
           <h1 class="title">{{item.name}}</h1>
           <ul>
-            <li :key="index" v-for="(food, index) in item.foods" class="food-item border-1px" @click="addToCart(food)">
+            <li :key="index" v-for="(food, index) in item.foods" class="food-item border-1px">
               <div class="icon">
                 <img width="57" height="57" :src="food.icon">
               </div>
@@ -36,7 +36,7 @@
                   <span class="old" v-show="food.oldPrice">¥{{food.oldPrice}}</span>
                 </div>
                 <div class="cartcontrol-wrapper">
-                  <cartcontrol :food="food"/>
+                  <cartcontrol :food="food" :addToCart="addToCart"/>
                 </div>
               </div>
               <div></div>
@@ -102,8 +102,13 @@ export default {
   },
   methods: {
     _initScroll() {
-      this.menuScroll = new BScroll(this.$refs.menuWrapper, {})
-      this.foods = new BScroll(this.$refs.foodsWrapper, { probeType: 3 })
+      this.menuScroll = new BScroll(this.$refs.menuWrapper, {
+        click: true,
+      })
+      this.foods = new BScroll(this.$refs.foodsWrapper, {
+        click: true,
+        probeType: 3,
+      })
       this.foods.on('scroll', pos => {
         this.offsetY = Math.abs(pos.y)
       })
@@ -113,6 +118,9 @@ export default {
       this.foods.scrollTo(0, -scrollHeight, 500)
     },
     addToCart(food) {
+      this.selectedFood.push(food)
+    },
+    deleteFromCart(food) {
       this.selectedFood.push(food)
     },
   },
