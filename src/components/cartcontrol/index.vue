@@ -40,7 +40,7 @@ export default {
 .move-enter {
   opacity: 1;
   transition: all 0.4s linear;
-  transform: rotate(0deg) translateX(30px) rotate(180deg);
+  transform: rotate(0deg) translateX(50px) rotate(180deg);
 }
 
 .move-leave-active {
