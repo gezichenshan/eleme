@@ -19,22 +19,66 @@
         </div>
       </div>
     </div>
+    <div class="ball-container">
+      <!-- <div :key="index" v-for="(ball,index) in balls" v-show="ball.show" class="ball">
+        <transition name="drop">
+          <div class="inner"></div>
+        </transition>
+      </div> -->
+      <div class="ball-container">
+        <transition
+          name="drop"
+          v-on:before-enter="beforeEnter"
+          v-on:enter="enter"
+          v-on:after-enter="afterEnter"
+        >
+          <div class="ball" ref="droppingBall" v-show="ballShow">
+            <div class="inner"></div>
+          </div>
+        </transition>
+      </div>
+    </div>
   </div>
 </template>
 <script>
 export default {
   props: ['selectedFood', 'deliveryPrice', 'minPrice'],
+  data() {
+    return {
+      ballShow: false,
+      balls: [
+        {
+          show: false,
+        },
+        {
+          show: false,
+        },
+        {
+          show: false,
+        },
+        {
+          show: false,
+        },
+        {
+          show: false,
+        },
+      ],
+      dropballs: [],
+    }
+  },
   computed: {
     totalPrice() {
       let total = 0
       this.selectedFood.forEach(item => {
-        total += item.price
+        total += item.price * item.count
       })
       return total
     },
     totalCount() {
       let total = 0
-      this.selectedFood.forEach(item => {})
+      this.selectedFood.forEach(item => {
+        total += item.count
+      })
       return total
     },
     payDesc() {
@@ -53,6 +97,40 @@ export default {
       } else {
         return 'enough'
       }
+    },
+  },
+  methods: {
+    beforeEnter(el) {
+      console.log(el)
+    },
+    enter: function(el) {
+      /* eslint-disable no-unused-vars */
+      let rf = el.offsetHeight
+      this.$nextTick(() => {
+        el.style.webkitTransform = `translate3d(0,0,0)`
+        el.style.transform = `translate3d(0,0,0)`
+      })
+    },
+    afterEnter(el) {
+      this.ballShow = false
+    },
+    drop(el) {
+      let rect = el.getBoundingClientRect()
+      let x = rect.left - 32
+      let y = -(window.innerHeight - rect.top - 22)
+      let droppingBall = this.$refs.droppingBall
+      this.ballShow = true
+      // droppingBall.style.display = ''
+      droppingBall.style.webkitTransform = `translate3d(${x}px,${y}px,0)`
+      droppingBall.style.transform = `translate3d(${x}px,${y}px,0)`
+
+      // this.balls.forEach(ball => {
+      //   if (!ball.show) {
+      //     ball.show = true
+      //     ball.el = el
+      //     this.dropballs.push(ball)
+      //   }
+      // })
     },
   },
 }
@@ -176,6 +254,27 @@ export default {
         }
       }
     }
+  }
+
+  .ball-container {
+    .ball {
+      position: fixed;
+      left: 32px;
+      bottom: 22px;
+      z-index: 200;
+
+      .inner {
+        width: 16px;
+        height: 16px;
+        border-radius: 50%;
+        background: rgb(0, 160, 220);
+        transition: all 0.4s;
+      }
+    }
+  }
+
+  .drop-enter-active {
+    transition: all 0.4s cubic-bezier(0, 0, 0.58, 1);
   }
 }
 </style>

@@ -9,8 +9,8 @@
       </div>
     </transition>
     <div class="cart-count" v-show="food.count > 0">{{food.count}}</div>
-    <div class="cart-add">
-      <i class="icon-add_circle" @click="add"></i>
+    <div class="cart-add" @click="add">
+      <i class="icon-add_circle"></i>
     </div>
   </div>
 </template>
@@ -18,20 +18,18 @@
 export default {
   props: ['food', 'addToCart', 'deleteFromCart'],
   methods: {
-    add() {
+    add(event) {
       if (!this.food.count) {
         this.$set(this.food, 'count', 1)
       } else {
         this.food.count++
       }
-      // this.addToCart(this.food)
+      this.$emit('cartAdd', event.target)
     },
     deleteItem() {
-      console.log(this.food.count)
       if (this.food.count) {
         this.food.count--
       }
-      // this.deleteFromCart(this.food)
     },
   },
 }
