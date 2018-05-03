@@ -10,7 +10,7 @@ let ratings = appData.ratings
 
 let app = express()
 app.use(
-  cors({ origin: /(http:\/\/localhost*)/, credentials: true })
+  cors({ origin: /(http:\/\/*)/, credentials: true })
 )
 
 app.get('/', function (req, res) {

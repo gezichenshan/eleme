@@ -38,7 +38,11 @@ export default {
       .then(res => {
         this.seller = res.data.data
       })
-      .catch()
+      .catch(error => {
+        console.log(error.response.data)
+        console.log(error.response.status)
+        console.log(error.response.headers)
+      })
   },
 }
 </script>

@@ -20,21 +20,14 @@
       </div>
     </div>
     <div class="ball-container">
-      <!-- <div :key="index" v-for="(ball,index) in balls" v-show="ball.show" class="ball">
-        <transition name="drop">
-          <div class="inner"></div>
-        </transition>
-      </div> -->
-      <div class="ball-container">
+      <div :key="index" v-for="(ball,index) in balls"  class="ball">
         <transition
           name="drop"
           v-on:before-enter="beforeEnter"
           v-on:enter="enter"
           v-on:after-enter="afterEnter"
         >
-          <div class="ball" ref="droppingBall" v-show="ballShow">
-            <div class="inner"></div>
-          </div>
+          <div class="inner inner-hook" v-show="ball.show"></div>
         </transition>
       </div>
     </div>
@@ -45,7 +38,6 @@ export default {
   props: ['selectedFood', 'deliveryPrice', 'minPrice'],
   data() {
     return {
-      ballShow: false,
       balls: [
         {
           show: false,
@@ -101,7 +93,18 @@ export default {
   },
   methods: {
     beforeEnter(el) {
-      console.log(el)
+      let count = this.balls.length
+      while (count--) {
+        let ball = this.balls[count]
+        if (ball.show) {
+          let rect = ball.el.getBoundingClientRect()
+          let x = rect.left - 32
+          let y = -(window.innerHeight - rect.top - 22)
+          el.style.display = ''
+          el.style.webkitTransform = `translate3d(${x}px,${y}px,0)`
+          el.style.transform = `translate3d(${x}px,${y}px,0)`
+        }
+      }
     },
     enter: function(el) {
       /* eslint-disable no-unused-vars */
@@ -112,25 +115,21 @@ export default {
       })
     },
     afterEnter(el) {
-      this.ballShow = false
+      let ball = this.dropballs.shift()
+      if (ball.show) {
+        ball.show = false
+        el.style.display = 'none'
+      }
     },
     drop(el) {
-      let rect = el.getBoundingClientRect()
-      let x = rect.left - 32
-      let y = -(window.innerHeight - rect.top - 22)
-      let droppingBall = this.$refs.droppingBall
-      this.ballShow = true
-      // droppingBall.style.display = ''
-      droppingBall.style.webkitTransform = `translate3d(${x}px,${y}px,0)`
-      droppingBall.style.transform = `translate3d(${x}px,${y}px,0)`
-
-      // this.balls.forEach(ball => {
-      //   if (!ball.show) {
-      //     ball.show = true
-      //     ball.el = el
-      //     this.dropballs.push(ball)
-      //   }
-      // })
+      this.balls.forEach(ball => {
+        if (!ball.show) {
+          ball.show = true
+          ball.el = el
+          this.dropballs.push(ball)
+          return false
+        }
+      })
     },
   },
 }
@@ -274,7 +273,7 @@ export default {
   }
 
   .drop-enter-active {
-    transition: all 0.4s cubic-bezier(0, 0, 0.58, 1);
+    transition: all 0.4s cubic-bezier(0.46, -0.41, 0.83, 0.67);
   }
 }
 </style>
